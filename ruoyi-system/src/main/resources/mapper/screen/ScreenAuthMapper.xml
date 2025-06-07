@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ScreenAuthMapper">
+
+    <resultMap type="ScreenAuth" id="ScreenAuthResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="resourceId"    column="resource_id"    />
+        <result property="authStatus"    column="auth_status"    />
+        <result property="authTime"    column="auth_time"    />
+    </resultMap>
+
+    <sql id="selectScreenAuthVo">
+        select id, user_id, resource_id, auth_status, auth_time from screen_auth
+    </sql>
+
+    <select id="selectScreenAuthList" parameterType="ScreenAuth" resultMap="ScreenAuthResult">
+        <include refid="selectScreenAuthVo"/>
+        <where>
+            <if test="authStatus != null "> and auth_status = #{authStatus}</if>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="resourceId != null and resourceId != '' "> and resource_id = #{resourceId}</if>
+        </where>
+    </select>
+
+    <select id="selectScreenAuthById" parameterType="Long" resultMap="ScreenAuthResult">
+        <include refid="selectScreenAuthVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectScreenAuth" parameterType="ScreenAuth" resultMap="ScreenAuthResult">
+        <include refid="selectScreenAuthVo"/>
+        <where>
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="resourceId != null "> and resource_id = #{resourceId}</if>
+        </where>
+    </select>
+
+    <insert id="insertScreenAuth" parameterType="ScreenAuth" useGeneratedKeys="true" keyProperty="id">
+        insert into screen_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="resourceId != null and resourceId != ''">resource_id,</if>
+            <if test="authStatus != null">auth_status,</if>
+            <if test="authTime != null">auth_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="resourceId != null and resourceId != ''">#{resourceId},</if>
+            <if test="authStatus != null">#{authStatus},</if>
+            <if test="authTime != null">#{authTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateScreenAuth" parameterType="ScreenAuth">
+        update screen_auth
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="resourceId != null and resourceId != ''">resource_id = #{resourceId},</if>
+            <if test="authStatus != null">auth_status = #{authStatus},</if>
+            <if test="authTime != null">auth_time = #{authTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteScreenAuthById" parameterType="Long">
+        delete from screen_auth where id = #{id}
+    </delete>
+
+    <delete id="deleteScreenAuthByIds" parameterType="String">
+        delete from screen_auth where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

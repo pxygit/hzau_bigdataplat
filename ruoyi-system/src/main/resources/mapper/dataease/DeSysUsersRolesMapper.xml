@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.dataease.mapper.DeSysUsersRolesMapper">
+
+    <resultMap type="DeSysUsersRoles" id="DeSysUsersRolesResult">
+        <result property="userId"    column="user_id"    />
+        <result property="roleId"    column="role_id"    />
+    </resultMap>
+
+    <sql id="selectDeSysUsersRolesVo">
+        select user_id, role_id from de_sys_users_roles
+    </sql>
+
+    <select id="selectDeSysUsersRolesList" parameterType="DeSysUsersRoles" resultMap="DeSysUsersRolesResult">
+        <include refid="selectDeSysUsersRolesVo"/>
+        <where>
+        </where>
+    </select>
+
+    <select id="selectDeSysUsersRolesByUserId" parameterType="Long" resultMap="DeSysUsersRolesResult">
+        <include refid="selectDeSysUsersRolesVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertDeSysUsersRoles" parameterType="DeSysUsersRoles">
+        insert into de_sys_users_roles
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="roleId != null">role_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="roleId != null">#{roleId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDeSysUsersRoles" parameterType="DeSysUsersRoles">
+        update de_sys_users_roles
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="roleId != null">role_id = #{roleId},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteDeSysUsersRolesByUserId" parameterType="Long">
+        delete from de_sys_users_roles where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteDeSysUsersRolesByUserIds" parameterType="String">
+        delete from de_sys_users_roles where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

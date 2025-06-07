@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.dataease.mapper.DeSysUserMapper">
+
+    <resultMap type="DeSysUser" id="DeSysUserResult">
+        <result property="userId"    column="user_id"    />
+        <result property="deptId"    column="dept_id"    />
+        <result property="username"    column="username"    />
+        <result property="nickName"    column="nick_name"    />
+        <result property="gender"    column="gender"    />
+        <result property="phone"    column="phone"    />
+        <result property="email"    column="email"    />
+        <result property="password"    column="password"    />
+        <result property="isAdmin"    column="is_admin"    />
+        <result property="enabled"    column="enabled"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="pwdResetTime"    column="pwd_reset_time"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="language"    column="language"    />
+        <result property="from"    column="`from`"    />
+        <result property="sub"    column="`sub`"    />
+        <result property="phonePrefix"    column="phone_prefix"    />
+    </resultMap>
+
+    <sql id="selectDeSysUserVo">
+        select user_id, dept_id, username, nick_name, gender, phone, email, password, is_admin, enabled, create_by, update_by, pwd_reset_time, create_time, update_time, language, `from`, `sub`, phone_prefix from de_sys_user
+    </sql>
+
+    <select id="selectDeSysUserList" parameterType="DeSysUser" resultMap="DeSysUserResult">
+        <include refid="selectDeSysUserVo"/>
+        <where>
+            <if test="deptId != null "> and dept_id = #{deptId}</if>
+            <if test="username != null  and username != ''"> and username like concat('%', #{username}, '%')</if>
+            <if test="nickName != null  and nickName != ''"> and nick_name like concat('%', #{nickName}, '%')</if>
+            <if test="gender != null  and gender != ''"> and gender = #{gender}</if>
+            <if test="phone != null  and phone != ''"> and phone = #{phone}</if>
+            <if test="email != null  and email != ''"> and email = #{email}</if>
+            <if test="password != null  and password != ''"> and password = #{password}</if>
+            <if test="isAdmin != null "> and is_admin = #{isAdmin}</if>
+            <if test="enabled != null "> and enabled = #{enabled}</if>
+            <if test="pwdResetTime != null "> and pwd_reset_time = #{pwdResetTime}</if>
+            <if test="language != null  and language != ''"> and language = #{language}</if>
+            <if test="from != null "> and `from` = #{from}</if>
+            <if test="sub != null  and sub != ''"> and `sub` = #{sub}</if>
+            <if test="phonePrefix != null  and phonePrefix != ''"> and phone_prefix = #{phonePrefix}</if>
+        </where>
+    </select>
+
+    <select id="selectDeSysUserByUserId" parameterType="Long" resultMap="DeSysUserResult">
+        <include refid="selectDeSysUserVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insertDeSysUser" parameterType="DeSysUser" useGeneratedKeys="true" keyProperty="userId">
+        insert into de_sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">dept_id,</if>
+            <if test="username != null">username,</if>
+            <if test="nickName != null">nick_name,</if>
+            <if test="gender != null">gender,</if>
+            <if test="phone != null">phone,</if>
+            <if test="email != null">email,</if>
+            <if test="password != null">password,</if>
+            <if test="isAdmin != null">is_admin,</if>
+            <if test="enabled != null">enabled,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="pwdResetTime != null">pwd_reset_time,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="language != null">language,</if>
+            <if test="from != null">`from`,</if>
+            <if test="sub != null">`sub`,</if>
+            <if test="phonePrefix != null">phone_prefix,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deptId != null">#{deptId},</if>
+            <if test="username != null">#{username},</if>
+            <if test="nickName != null">#{nickName},</if>
+            <if test="gender != null">#{gender},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="email != null">#{email},</if>
+            <if test="password != null">#{password},</if>
+            <if test="isAdmin != null">#{isAdmin},</if>
+            <if test="enabled != null">#{enabled},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="pwdResetTime != null">#{pwdResetTime},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="language != null">#{language},</if>
+            <if test="from != null">#{from},</if>
+            <if test="sub != null">#{sub},</if>
+            <if test="phonePrefix != null">#{phonePrefix},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDeSysUser" parameterType="DeSysUser">
+        update de_sys_user
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="deptId != null">dept_id = #{deptId},</if>
+            <if test="username != null">username = #{username},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="email != null">email = #{email},</if>
+            <if test="password != null">password = #{password},</if>
+            <if test="isAdmin != null">is_admin = #{isAdmin},</if>
+            <if test="enabled != null">enabled = #{enabled},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="pwdResetTime != null">pwd_reset_time = #{pwdResetTime},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="language != null">language = #{language},</if>
+            <if test="from != null">`from` = #{from},</if>
+            <if test="sub != null">`sub` = #{sub},</if>
+            <if test="phonePrefix != null">phone_prefix = #{phonePrefix},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteDeSysUserByUserId" parameterType="Long">
+        delete from de_sys_user where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteDeSysUserByUserIds" parameterType="String">
+        delete from de_sys_user where user_id in
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+</mapper>

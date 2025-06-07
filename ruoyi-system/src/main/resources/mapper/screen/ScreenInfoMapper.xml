@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ScreenInfoMapper">
+
+    <resultMap type="ScreenInfo" id="ScreenInfoResult">
+        <result property="id"    column="id"    />
+        <result property="name"    column="name"    />
+        <result property="resourceId"    column="resource_id"    />
+        <result property="path"    column="path"    />
+        <result property="pwd"    column="pwd"    />
+        <result property="pubStatus"    column="pub_status"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectScreenInfoVo">
+        select id, name, resource_id, path, pwd, pub_status, create_by, create_time from screen_info
+    </sql>
+
+    <select id="selectScreenInfoList" parameterType="ScreenInfo" resultMap="ScreenInfoResult">
+        <include refid="selectScreenInfoVo"/>
+        <where>
+            <if test="name != null  and name != ''"> and name like concat('%', #{name}, '%')</if>
+            <if test="pubStatus != null "> and pub_status = #{pubStatus}</if>
+        </where>
+    </select>
+
+    <select id="selectScreenInfoById" parameterType="Long" resultMap="ScreenInfoResult">
+        <include refid="selectScreenInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectScreenInfoByResourceId" parameterType="String" resultMap="ScreenInfoResult">
+        <include refid="selectScreenInfoVo"/>
+        where resource_id = #{resourceId}
+    </select>
+
+    <select id="selectScreenOptionsByUsername" parameterType="String" resultType="java.util.Map">
+        SELECT
+            si.name as label,
+            si.resource_id as value
+        FROM
+            screen_info si
+        WHERE
+            si.pub_status = 1
+          AND si.resource_id NOT IN (
+            SELECT sa.resource_id
+            FROM sys_user su
+                     INNER JOIN screen_auth sa ON su.user_id = sa.user_id
+            WHERE su.user_name = #{username}
+              AND sa.auth_status = 1
+        )
+    </select>
+
+    <insert id="insertScreenInfo" parameterType="ScreenInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into screen_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">name,</if>
+            <if test="resourceId != null and resourceId != ''">resource_id,</if>
+            <if test="path != null">path,</if>
+            <if test="pwd != null">pwd,</if>
+            <if test="pubStatus != null">pub_status,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="resourceId != null and resourceId != ''">#{resourceId},</if>
+            <if test="path != null">#{path},</if>
+            <if test="pwd != null">#{pwd},</if>
+            <if test="pubStatus != null">#{pubStatus},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateScreenInfo" parameterType="ScreenInfo">
+        update screen_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="resourceId != null and resourceId != ''">resource_id = #{resourceId},</if>
+            <if test="path != null">path = #{path},</if>
+            <if test="pwd != null">pwd = #{pwd},</if>
+            <if test="pubStatus != null">pub_status = #{pubStatus},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteScreenInfoById" parameterType="Long">
+        delete from screen_info where id = #{id}
+    </delete>
+
+    <delete id="deleteScreenInfoByIds" parameterType="String">
+        delete from screen_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

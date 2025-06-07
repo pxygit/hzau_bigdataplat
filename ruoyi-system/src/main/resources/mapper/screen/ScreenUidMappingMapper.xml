@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.ScreenUidMappingMapper">
+
+    <resultMap type="ScreenUidMapping" id="ScreenUidMappingResult">
+        <result property="dUserId"    column="d_user_id"    />
+        <result property="ryUserId"    column="ry_user_id"    />
+        <result property="enabled"    column="enabled"    />
+    </resultMap>
+
+    <sql id="selectScreenUidMappingVo">
+        select d_user_id, ry_user_id, enabled from screen_uid_mapping
+    </sql>
+
+    <select id="selectScreenUidMappingList" parameterType="ScreenUidMapping" resultMap="ScreenUidMappingResult">
+        <include refid="selectScreenUidMappingVo"/>
+        <where>
+            <if test="dUserId != null "> and d_user_id = #{dUserId}</if>
+            <if test="ryUserId != null "> and ry_user_id = #{ryUserId}</if>
+            <if test="enabled != null "> and enabled = #{enabled}</if>
+        </where>
+    </select>
+
+    <select id="selectScreenUidMappingByDUserId" parameterType="Long" resultMap="ScreenUidMappingResult">
+        <include refid="selectScreenUidMappingVo"/>
+        where d_user_id = #{dUserId}
+    </select>
+
+    <select id="selectScreenUidMappingByRUserId" parameterType="Long" resultMap="ScreenUidMappingResult">
+        <include refid="selectScreenUidMappingVo"/>
+        where ry_user_id = #{rUserId}
+    </select>
+
+    <insert id="insertScreenUidMapping" parameterType="ScreenUidMapping">
+        insert into screen_uid_mapping
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="dUserId != null">d_user_id,</if>
+            <if test="ryUserId != null">ry_user_id,</if>
+            <if test="enabled != null">enabled,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="dUserId != null">#{dUserId},</if>
+            <if test="ryUserId != null">#{ryUserId},</if>
+            <if test="enabled != null">#{enabled},</if>
+        </trim>
+    </insert>
+
+    <update id="updateScreenUidMapping" parameterType="ScreenUidMapping">
+        update screen_uid_mapping
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ryUserId != null">ry_user_id = #{ryUserId},</if>
+            <if test="enabled != null">enabled = #{enabled},</if>
+        </trim>
+        where d_user_id = #{dUserId}
+    </update>
+
+    <delete id="deleteScreenUidMappingByDUserId" parameterType="Long">
+        delete from screen_uid_mapping where d_user_id = #{dUserId}
+    </delete>
+
+    <delete id="deleteScreenUidMappingByDUserIds" parameterType="String">
+        delete from screen_uid_mapping where d_user_id in
+        <foreach item="dUserId" collection="array" open="(" separator="," close=")">
+            #{dUserId}
+        </foreach>
+    </delete>
+</mapper>
