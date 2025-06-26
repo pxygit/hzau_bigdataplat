@@ -69,7 +69,11 @@
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="流程编号" align="center" prop="deploymentId" :show-overflow-tooltip="true"/>
       <el-table-column label="流程标识" align="center" prop="flowKey" :show-overflow-tooltip="true" />
-      <el-table-column label="流程分类" align="center" prop="category" />
+      <el-table-column label="流程分类" align="center" prop="category" >
+        <template slot-scope="scope">
+          <dict-tag :options="dict.type.sys_process_category" :value="scope.row.category"/>
+        </template>
+      </el-table-column>
       <el-table-column label="流程名称" align="center" width="120" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <el-button type="text" @click="handleReadImage(scope.row.deploymentId)">

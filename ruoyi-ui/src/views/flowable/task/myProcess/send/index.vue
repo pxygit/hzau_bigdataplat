@@ -63,7 +63,7 @@ export default {
       // 遮罩层
       loading: true,
       deployId: "",  // 流程定义编号
-      procDefId: "",  // 流程实例编号
+      procDefId: "",  // 流程实例编号   pxy : 流程定义编号，应该在设计时做反了
       formRenderData: {},
       variables: [], // 流程变量数据
       taskTitle: null,
