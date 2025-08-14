@@ -17,6 +17,8 @@ public class MyDatasourceVO extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
+    private Long id;
+
     /** 数据源名称 */
     @Excel(name = "数据源名称")
     private String name;
@@ -45,6 +47,16 @@ public class MyDatasourceVO extends BaseEntity
     /** 审批人 */
     @Excel(name = "审批人ID")
     private String authBy;
+
+    public void setId(Long id)
+    {
+        this.id = id;
+    }
+
+    public Long getId()
+    {
+        return id;
+    }
 
     public String getName() {
         return name;

@@ -53,6 +53,7 @@ public class ScreenMyDatasourceServiceImpl implements IScreenMyDatasourceService
         screenMyDatasource.setUserId(SecurityUtils.getUserId());
         List<MyDatasourceVO> list = screenMyDatasourceMapper.selectScreenMyDatasourceList(screenMyDatasource).stream().map( item -> {
             MyDatasourceVO myDatasourceVO = new MyDatasourceVO();
+            myDatasourceVO.setId(item.getId());
             myDatasourceVO.setDatasourceId(item.getDatasourceId());
             myDatasourceVO.setAuthStatus(item.getAuthStatus());
             myDatasourceVO.setAuthTime(item.getAuthTime());
