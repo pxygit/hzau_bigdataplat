@@ -27,9 +27,11 @@ import com.ruoyi.system.dataease.domain.DeSysUsersRoles;
 import com.ruoyi.system.dataease.mapper.DeSysUserMapper;
 import com.ruoyi.system.dataease.mapper.DeSysUsersRolesMapper;
 import com.ruoyi.system.domain.ScreenAuth;
+import com.ruoyi.system.domain.ScreenMyDatasource;
 import com.ruoyi.system.domain.ScreenUidMapping;
 import com.ruoyi.system.domain.SysForm;
 import com.ruoyi.system.mapper.ScreenAuthMapper;
+import com.ruoyi.system.mapper.ScreenMyDatasourceMapper;
 import com.ruoyi.system.mapper.ScreenUidMappingMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
 import com.ruoyi.system.service.ISysRoleService;
@@ -102,6 +104,8 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
     private DeSysUsersRolesMapper deSysUsersRolesMapper;
     @Autowired
     private ScreenAuthMapper screenAuthMapper;
+    @Autowired
+    private ScreenMyDatasourceMapper screenMyDatasourceMapper;
 
     /**
      * 完成任务
@@ -140,6 +144,9 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                 } else if (applyFormType.equals("2")) {
                     //如果字段值为"2",则调用completeAccessApply
                     completeAccessApply(taskVo.getVariables());
+                } else if (applyFormType.equals("3")) {
+                    //如果字段值为"2",则调用completeAccessApply
+                    completeDatasourceApply(taskVo.getVariables());
                 }
                 // TODO 其他表单类型的处理逻辑 - pxy
             }
@@ -221,6 +228,35 @@ public class FlowTaskServiceImpl extends FlowServiceFactory implements IFlowTask
                     .userId(userId)
                     .resourceId(resourceId)
                     .authStatus(1)
+                    .build());
+        }
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void completeDatasourceApply(Map<String, Object> variables) {
+        // 获取表单变量值
+        String username = (String) variables.get("username3");
+        Integer datasourceId = (Integer) variables.get("source3");
+        SysUser sysUser = sysUserMapper.selectUserByUserName(username);
+        Long userId = sysUser.getUserId();
+
+        // 查询是否存在对应的记录
+        ScreenMyDatasource screenMyDatasource = screenMyDatasourceMapper.selectScreenMyDatasourceList(ScreenMyDatasource.builder()
+                .userId(userId)
+                .datasourceId(Long.valueOf(datasourceId))
+                .build()).stream().findFirst().orElse(null);
+        if (screenMyDatasource != null) {
+            // 如果记录存在，更新auth_status字段为1
+            screenMyDatasource.setAuthStatus(1);
+            screenMyDatasourceMapper.updateScreenMyDatasource(screenMyDatasource);
+        } else {
+            // 如果记录不存在，新增一条记录
+            screenMyDatasourceMapper.insertScreenMyDatasource(ScreenMyDatasource.builder()
+                    .userId(userId)
+                    .datasourceId(Long.valueOf(datasourceId))
+                    .authStatus(1)
+                    .authTime(new Date())
+                    .authBy(SecurityUtils.getUserId())
                     .build());
         }
     }
