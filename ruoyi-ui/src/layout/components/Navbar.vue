@@ -57,6 +57,8 @@ import Search from '@/components/HeaderSearch'
 import RuoYiGit from '@/components/RuoYi/Git'
 import RuoYiDoc from '@/components/RuoYi/Doc'
 
+import {keycloakLogout} from "../../store/modules/keycloak";
+
 export default {
   components: {
     Breadcrumb,
@@ -102,7 +104,8 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('LogOut').then(() => {
-          location.href = '/index';
+          // location.href = '/index';
+          keycloakLogout();
         })
       }).catch(() => {});
     }

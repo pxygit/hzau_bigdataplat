@@ -44,6 +44,9 @@ import '@/components/vform/VFormDesigner.css'
 
 import modelerStore from '@/components/Process/common/global'
 
+// keycloak 初始化
+import {initKeycloak,setAuthenticated} from "./store/modules/keycloak";
+import {setToken,getToken} from '@/utils/auth'
 
 // 全局方法挂载
 Vue.prototype.modelerStore = modelerStore
@@ -89,9 +92,22 @@ Vue.use(Element, {
 
 Vue.config.productionTip = false
 
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
-})
+if(!getToken()) {
+  initKeycloak().then(() => {
+    new Vue({
+      el: '#app',
+      router,
+      store,
+      render: h => h(App)
+    })
+  })
+} else {
+  setAuthenticated(true)
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    render: h => h(App)
+  })
+}
+

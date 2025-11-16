@@ -18,7 +18,7 @@
       <el-col :xs="24" :sm="24" :md="12" :lg="10" align="center">
         <el-card class="update-log">
           <div slot="header" class="clearfix">
-            <span>其他服务入口页</span>
+            <span>大屏账号申请入口页</span>
           </div>
           <div class="body">
             <p>

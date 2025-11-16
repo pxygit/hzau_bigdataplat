@@ -2,6 +2,8 @@ package com.ruoyi.web.controller.system;
 
 import java.util.List;
 import java.util.Set;
+
+import org.keycloak.KeycloakPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,17 +39,27 @@ public class SysLoginController
     /**
      * 登录方法
      * 
-     * @param loginBody 登录信息
+     * @param
      * @return 结果
      */
+//    @PostMapping("/login")
+//    public AjaxResult login(@RequestBody LoginBody loginBody)
+//    {
+//        AjaxResult ajax = AjaxResult.success();
+//        // 生成令牌
+//        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
+//                loginBody.getUuid());
+//        ajax.put(Constants.TOKEN, token);
+//        return ajax;
+//    }
     @PostMapping("/login")
-    public AjaxResult login(@RequestBody LoginBody loginBody)
+    public AjaxResult login()
     {
+        KeycloakPrincipal keycloakPrincipal = (KeycloakPrincipal) SecurityUtils.getAuthentication().getPrincipal();
+        String userName = keycloakPrincipal.getKeycloakSecurityContext().getToken().getPreferredUsername();
+        loginService.login(userName);
         AjaxResult ajax = AjaxResult.success();
-        // 生成令牌
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-                loginBody.getUuid());
-        ajax.put(Constants.TOKEN, token);
+        ajax.put(Constants.TOKEN, keycloakPrincipal.getKeycloakSecurityContext().getTokenString());
         return ajax;
     }
 

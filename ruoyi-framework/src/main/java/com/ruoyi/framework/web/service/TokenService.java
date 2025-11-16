@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
+
+import com.ruoyi.common.utils.SecurityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +61,34 @@ public class TokenService
      *
      * @return 用户信息
      */
+//    public LoginUser getLoginUser(HttpServletRequest request)
+//    {
+//        // 获取请求携带的令牌
+//        String token = getToken(request);
+//        if (StringUtils.isNotEmpty(token))
+//        {
+//            try
+//            {
+//                Claims claims = parseToken(token);
+//                // 解析对应的权限以及用户信息
+//                String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
+//                String userKey = getTokenKey(uuid);
+//                LoginUser user = redisCache.getCacheObject(userKey);
+//                return user;
+//            }
+//            catch (Exception e)
+//            {
+//                log.error("获取用户信息异常'{}'", e.getMessage());
+//            }
+//        }
+//        return null;
+//    }
     public LoginUser getLoginUser(HttpServletRequest request)
+    {
+        return SecurityUtils.getLoginUser();
+    }
+
+    public LoginUser getLoginUserByToken(HttpServletRequest request)
     {
         // 获取请求携带的令牌
         String token = getToken(request);
@@ -76,7 +105,6 @@ public class TokenService
             }
             catch (Exception e)
             {
-                log.error("获取用户信息异常'{}'", e.getMessage());
             }
         }
         return null;

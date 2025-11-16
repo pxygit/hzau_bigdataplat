@@ -280,6 +280,7 @@ export default {
         datasourceId: null,
         authStatus: null,
       },
+      isReadOnly: true,
       // 表单参数
       form: {},
       // 表单校验

@@ -88,6 +88,26 @@ spring:
         # #连接池最大阻塞等待时间（使用负值表示没有限制）
         max-wait: -1ms
 
+# Keycloak配置
+keycloak:
+  realm: hzau
+  auth-server-url: http://192.168.196.101:9080
+  ssl-required: external
+  resource: flow-backend
+  #  use-resource-role-mappings: true
+  bearer-only: true
+  cors: true
+  credentials:
+    secret: Pz6dWGFFNuZpJe8tKM897hKRllP5pkug
+  confidential-port: 0
+#  security-constraints:
+#    - authRoles:
+#        - ROLE_ADMIN
+#      securityCollections:
+#        - name: admin
+#          patterns:
+#            - /admin
+
 # token配置
 token:
   # 令牌自定义标识

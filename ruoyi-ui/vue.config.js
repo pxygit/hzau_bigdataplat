@@ -26,6 +26,9 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   // 如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
   productionSourceMap: false,
+  transpileDependencies: [
+    /[\\/]node_modules[\\/]keycloak-js[\\/]/
+  ],
   // webpack-dev-server 相关配置
   devServer: {
     host: '0.0.0.0',
@@ -34,14 +37,17 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://localhost:8080`,
+        target: `http://192.168.196.101:8080`,
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
       }
     },
-    disableHostCheck: true
+    public: 'http://192.168.196.101:1024',
+    disableHostCheck: true,
+    hot: false,  //热更新配置
+    liveReload: false,  //热更新配置
   },
   css: {
     loaderOptions: {
@@ -68,6 +74,25 @@ module.exports = {
         deleteOriginalAssets: false                    // 压缩后删除原文件
       })
     ],
+    module: {
+      rules: [
+        {
+          test: /keycloak\.mjs$/,
+          include: /node_modules\/keycloak-js\/dist/,
+          type: 'javascript/auto', // 禁用 Webpack 对 .mjs 的默认 ES 模块处理
+          use: {
+            loader: 'babel-loader', // 使用 babel 转译
+            options: {
+              presets: ['@babel/preset-env'],
+              plugins: [
+                '@babel/plugin-proposal-optional-chaining',
+                '@babel/plugin-proposal-nullish-coalescing-operator'
+              ]
+            }
+          }
+        }
+      ]
+    }
   },
   chainWebpack(config) {
     config.plugins.delete('preload') // TODO: need test

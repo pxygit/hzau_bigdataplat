@@ -54,7 +54,7 @@ public class UserDetailsServiceImpl implements UserDetailsService
             throw new ServiceException(MessageUtils.message("user.blocked"));
         }
 
-        passwordService.validate(user);
+//        passwordService.validate(user); 注释掉，避免keycloak与本地密码不一致导致校验失败
 
         return createLoginUser(user);
     }
