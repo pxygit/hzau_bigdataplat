@@ -92,22 +92,12 @@ Vue.use(Element, {
 
 Vue.config.productionTip = false
 
-if(!getToken()) {
-  initKeycloak().then(() => {
-    new Vue({
-      el: '#app',
-      router,
-      store,
-      render: h => h(App)
-    })
-  })
-} else {
-  setAuthenticated(true)
+initKeycloak().then(() => {
   new Vue({
     el: '#app',
     router,
     store,
     render: h => h(App)
   })
-}
+})
 

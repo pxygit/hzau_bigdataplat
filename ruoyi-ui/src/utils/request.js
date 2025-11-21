@@ -126,7 +126,6 @@ service.interceptors.response.use(res => {
         }
       ).then(() => {
         store.dispatch('LogOut').then(() => {
-          removeToken();
           keycloakLogout();
         })
       })
