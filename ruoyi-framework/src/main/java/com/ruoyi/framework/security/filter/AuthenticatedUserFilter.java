@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
+//import org.springframework.security.core.userdetails.UserDetailsService;
+import com.ruoyi.framework.web.service.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -30,7 +31,7 @@ import java.util.Map;
 @Component
 public class AuthenticatedUserFilter extends OncePerRequestFilter {
 
-    @Qualifier("userDetailsServiceImpl")
+//    @Qualifier("userDetailsServiceImpl")
     @Autowired
     private UserDetailsService userDetailsService;
 
@@ -44,14 +45,15 @@ public class AuthenticatedUserFilter extends OncePerRequestFilter {
             KeycloakPrincipal keycloakPrincipal = (KeycloakPrincipal) SecurityUtils.getAuthentication().getPrincipal();
             MyKeycloakPrincipal myKeycloakPrincipal = new MyKeycloakPrincipal(keycloakPrincipal.getName(), keycloakPrincipal.getKeycloakSecurityContext());
             String userName = "";
-            Map<String, AccessToken.Access> resourceAccess = keycloakPrincipal.getKeycloakSecurityContext().getToken().getResourceAccess();
+            AccessToken kcToken = keycloakPrincipal.getKeycloakSecurityContext().getToken();
+            Map<String, AccessToken.Access> resourceAccess = kcToken.getResourceAccess();
             if (resourceAccess!=null && resourceAccess.get(resource)!=null && CollectionUtils.isNotEmpty(resourceAccess.get(resource).getRoles())){
                 userName = resourceAccess.get(resource).getRoles().iterator().next();
             } else {
-                userName = keycloakPrincipal.getKeycloakSecurityContext().getToken().getPreferredUsername();
+                userName = kcToken.getPreferredUsername();
             }
             if (myKeycloakPrincipal.getLoginUser() == null) {
-                LoginUser loginUser = (LoginUser) userDetailsService.loadUserByUsername(userName);
+                LoginUser loginUser = (LoginUser) userDetailsService.loadUserByUsername(userName,kcToken);
                 myKeycloakPrincipal.setLoginUser(loginUser);
             }
             KeycloakAuthenticationToken keycloakAuthenticationToken = (KeycloakAuthenticationToken) SecurityUtils.getAuthentication();

@@ -15,6 +15,8 @@ import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ISysUserService;
 
+import org.keycloak.representations.AccessToken;
+
 /**
  * 用户验证处理
  *
@@ -34,14 +36,18 @@ public class UserDetailsServiceImpl implements UserDetailsService
     @Autowired
     private SysPermissionService permissionService;
 
-    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException
     {
         SysUser user = userService.selectUserByUserName(username);
         if (StringUtils.isNull(user))
         {
-            log.info("登录用户：{} 不存在.", username);
-            throw new ServiceException(MessageUtils.message("user.not.exists"));
+            log.info("登录用户：{} 不存在.由系统创建相对应的用户", username);
+
+            // 使用keycloak账户登录后，ry数据库不存在该用户需要创建相应用户，注释错误抛出，改为创建账户
+            // throw new ServiceException(MessageUtils.message("user.not.exists"));
+
+            // 在此处实现用户创建逻辑
+            // 由于接口问题，相关实现在UserDetailsService.java中
         }
         else if (UserStatus.DELETED.getCode().equals(user.getDelFlag()))
         {
