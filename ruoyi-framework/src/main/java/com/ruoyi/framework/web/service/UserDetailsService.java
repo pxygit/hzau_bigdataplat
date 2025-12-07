@@ -1,5 +1,6 @@
 package com.ruoyi.framework.web.service;
 
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.system.service.ISysRoleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +60,7 @@ public class UserDetailsService
             tmpUser.setEmail(kcToken.getEmail());
             tmpUser.setPhonenumber(kcToken.getPhoneNumber());
             tmpUser.setSex("0");
-            tmpUser.setPassword("123456");
+            tmpUser.setPassword(SecurityUtils.encryptPassword("123456"));
             tmpUser.setStatus("0");
             tmpUser.setDelFlag("0");
             tmpUser.setCreateBy("keycloak");

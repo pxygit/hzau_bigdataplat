@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.keycloak.KeycloakPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -23,12 +24,10 @@ import com.ruoyi.framework.web.service.TokenService;
 /**
  * 自定义退出处理类 返回成功
  *
- * @author ruoyi
+ * @author pxy
  */
 @Configuration
 public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
-    @Autowired
-    private TokenService tokenService;
 
     /**
      * 退出处理
@@ -36,21 +35,10 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
      * @return
      */
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-            throws IOException, ServletException
-    {
-        try {
-            request.logout();
-        } catch (ServletException e) {
-        }
-        LoginUser loginUser = tokenService.getLoginUserByToken(request);
-        if (StringUtils.isNotNull(loginUser))
-        {
-            String userName = loginUser.getUsername();
-            // 删除用户缓存记录
-            tokenService.delLoginUser(loginUser.getToken());
-            // 记录用户退出日志
-            AsyncManager.me().execute(AsyncFactory.recordLogininfor(userName, Constants.LOGOUT, "退出成功"));
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)  throws IOException, ServletException {
+        if (authentication != null && authentication.getPrincipal() instanceof KeycloakPrincipal) {
+            String username = ((KeycloakPrincipal<?>) authentication.getPrincipal()).getName();
+            AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGOUT, "退出成功"));
         }
         ServletUtils.renderString(response, JSON.toJSONString(AjaxResult.error(HttpStatus.SUCCESS, "退出成功")));
     }

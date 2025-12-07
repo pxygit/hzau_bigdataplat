@@ -87,8 +87,9 @@ public class KeycloakWebSecurityConfig extends KeycloakWebSecurityConfigurerAdap
         super.configure(http);
         http.csrf().disable()
                 .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .logout().logoutSuccessUrl("/login").and()
+                //.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and()
+                //.logout().logoutSuccessUrl("/login").and()
                 .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
@@ -109,6 +110,7 @@ public class KeycloakWebSecurityConfig extends KeycloakWebSecurityConfigurerAdap
                 .authenticated()
                 .and()
                 .headers().frameOptions().disable()
+
         ;
         http.logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccessHandler);
     }

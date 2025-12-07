@@ -100,6 +100,11 @@ keycloak:
   credentials:
     secret: Pz6dWGFFNuZpJe8tKM897hKRllP5pkug
   confidential-port: 0
+# 自定义 后端服务调用keycloak RESTful API所需的客户端信息
+keycloak-rustful-api:
+  admin:
+    client-id: ruoyi-client-admin
+    client-secret: x8Y2sQPkneW0ITyV5XRbwH51V6La3jix
 #  security-constraints:
 #    - authRoles:
 #        - ROLE_ADMIN

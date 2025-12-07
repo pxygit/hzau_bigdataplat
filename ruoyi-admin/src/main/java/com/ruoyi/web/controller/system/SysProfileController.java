@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import com.ruoyi.web.keycloak.KeycloakAdminClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,6 +38,9 @@ public class SysProfileController extends BaseController
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private KeycloakAdminClient keycloakAdminClient;
 
     /**
      * 个人信息
@@ -91,24 +95,23 @@ public class SysProfileController extends BaseController
     {
         LoginUser loginUser = getLoginUser();
         String userName = loginUser.getUsername();
-        String password = loginUser.getPassword();
-        if (!SecurityUtils.matchesPassword(oldPassword, password))
-        {
+        if (!keycloakAdminClient.validateKCPasswordByUsername(userName, oldPassword)) {
             return error("修改密码失败，旧密码错误");
         }
-        if (SecurityUtils.matchesPassword(newPassword, password))
-        {
+        if (oldPassword.equals(newPassword)) {
             return error("新密码不能与旧密码相同");
         }
-        newPassword = SecurityUtils.encryptPassword(newPassword);
-        if (userService.resetUserPwd(userName, newPassword) > 0)
-        {
-            // 更新缓存用户密码
-            loginUser.getUser().setPassword(newPassword);
-            tokenService.setLoginUser(loginUser);
-            return success();
+        try {
+            String userId = keycloakAdminClient.getUserIdByUsername(userName);
+            keycloakAdminClient.changePassword(userId, newPassword);
+        } catch (Exception e) {
+            return error("修改密码异常，请联系管理员");
         }
-        return error("修改密码异常，请联系管理员");
+
+        String encryptedNewPwd = SecurityUtils.encryptPassword(newPassword);
+        userService.resetUserPwd(userName, encryptedNewPwd);
+
+        return success();
     }
 
     /**
