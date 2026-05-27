@@ -3,9 +3,9 @@ import {setToken,getToken} from '@/utils/auth'
 import Keycloak from 'keycloak-js/dist/keycloak';
 
 let initOptions = {
-  url: 'http://192.168.196.101:9080',
-  realm: 'hzau',
-  clientId: 'flow-frontend',
+  url: process.env.VUE_APP_KEYCLOAK_URL || 'http://192.168.196.101:9080',
+  realm: process.env.VUE_APP_KEYCLOAK_REALM || 'hzau',
+  clientId: process.env.VUE_APP_KEYCLOAK_CLIENT_ID || 'flow-frontend',
   //enableLogging: true
 }
 
@@ -16,7 +16,7 @@ export function initKeycloak(){
     onLoad: 'login-required',
     checkLoginIframe: false,
     pkceMethod: 'S256',
-    redirectUri: 'http://192.168.196.101:1024/',
+    redirectUri: process.env.VUE_APP_KEYCLOAK_REDIRECT_URI || `${window.location.origin}/`,
   }).then(async (auth) => {
     if (!auth) {
       window.location.reload()
