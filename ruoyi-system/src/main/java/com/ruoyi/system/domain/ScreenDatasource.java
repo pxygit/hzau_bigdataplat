@@ -7,7 +7,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.ruoyi.common.annotation.Excel;
 import com.ruoyi.common.core.domain.BaseEntity;
 
-import java.io.Serial;
 
 /**
  * 数据源信息对象 screen_datasource
@@ -19,7 +18,6 @@ import java.io.Serial;
 @Data
 public class ScreenDatasource extends BaseEntity
 {
-    @Serial
     private static final long serialVersionUID = 1L;
 
     /** 自增ID */
