@@ -6,10 +6,12 @@ import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ruoyi.common.utils.SecurityUtils;
+import org.keycloak.MyKeycloakPrincipal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
@@ -85,7 +87,12 @@ public class TokenService
 //    }
     public LoginUser getLoginUser(HttpServletRequest request)
     {
-        return SecurityUtils.getLoginUser();
+        Authentication authentication = SecurityUtils.getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof MyKeycloakPrincipal))
+        {
+            return null;
+        }
+        return ((MyKeycloakPrincipal) authentication.getPrincipal()).getLoginUser();
     }
 
     public LoginUser getLoginUserByToken(HttpServletRequest request)
